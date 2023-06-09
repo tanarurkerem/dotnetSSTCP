@@ -1,0 +1,26 @@
+services:
+  cli:
+    build: .
+    user: "1000"
+    command: bash
+    volumes:
+      - ./:/app
+    working_dir: /app
+  server:
+    build: .
+    user: "1000"
+    command: dotnet run
+    volumes:
+      - ./:/app
+    working_dir: /app/Server
+  client:
+    build: .
+    environment:
+      - SERVER_NAME=server
+    user: "1000"
+    command: dotnet run
+    volumes:
+      - ./:/app
+    working_dir: /app/Client
+    depends_on:
+      - server
