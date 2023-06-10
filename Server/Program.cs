@@ -2,7 +2,7 @@
 using System.Text;
 
 class Program {
-    static SimpleTcpServer server;
+    static SimpleTcpServer? server;
 
     static void Main(string[] args)
     {
@@ -14,16 +14,21 @@ class Program {
         server.Events.ClientDisconnected += ClientDisconnected;
         server.Events.DataReceived += DataReceived;
 
+        server.Logger = Logger;
+
         // let's go!
         server.Start();
 
+        Console.WriteLine("Server ready for connection.");
         while (true) {}
     }
 
     static void ClientConnected(object? sender, ConnectionEventArgs e)
     {
         Console.WriteLine($"[{e.IpPort}] client connected");
-        server.Send($"{e.IpPort}", "Hello, Client!");
+        if (server is not null) {
+            server.Send($"{e.IpPort}", "Hello, Client!");
+        }
     }
 
     static void ClientDisconnected(object? sender, ConnectionEventArgs e)
@@ -33,6 +38,14 @@ class Program {
 
     static void DataReceived(object? sender, DataReceivedEventArgs e)
     {
-        Console.WriteLine($"Data Received on Server - [{e.IpPort}]: {Encoding.UTF8.GetString(e.Data.Array, 0, e.Data.Count)}");
+        if (e.Data.Array is not null) {
+            Console.WriteLine($"Data Received on Server - [{e.IpPort}]: {Encoding.UTF8.GetString(e.Data.Array, 0, e.Data.Count)}");
+        }
     }
+
+    static void Logger(string msg)
+    {
+        Console.WriteLine($"Logger: {msg}");
+    }
+
 }
