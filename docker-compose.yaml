@@ -1,3 +1,5 @@
+# docker compose --profile demo up
+# docker compose --profile cli run cli
 version: '3.9'
 services:
   cli:
@@ -9,6 +11,8 @@ services:
     environment:
       - SERVER_NAME=127.0.0.1
     working_dir: /app
+    profiles:
+      - cli
   server:
     build: .
     user: "1000"
@@ -22,6 +26,8 @@ services:
       timeout: 1s
       retries: 50
       start_period: 1s
+    profiles:
+      - demo
   client:
     build: .
     environment:
@@ -35,3 +41,5 @@ services:
     depends_on:
       server:
         condition: service_healthy
+    profiles:
+      - demo
