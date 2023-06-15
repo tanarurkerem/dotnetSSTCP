@@ -7,7 +7,7 @@ services:
     volumes:
       - ./:/app
     environment:
-      - SERVER_NAME=cli
+      - SERVER_NAME=127.0.0.1
     working_dir: /app
   server:
     build: .
@@ -25,7 +25,8 @@ services:
   client:
     build: .
     environment:
-      - SERVER_NAME=server
+      - serverName=server
+      - serverPort=9000
     user: "1000"
     command: dotnet run
     volumes:
